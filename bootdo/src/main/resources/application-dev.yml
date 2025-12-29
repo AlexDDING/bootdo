@@ -10,9 +10,9 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/bootdo?useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://127.0.0.1:3308/bootdo?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
     username: root
-    password: root
+    password: 1234567890qwe
     initialSize: 1
     minIdle: 3
     maxActive: 20
@@ -37,7 +37,7 @@ spring:
     #useGlobalDataSourceStat: true
   redis:
     host: localhost
-    port: 6379
+    port: 9786
     password:
     # 连接超时时间（毫秒）
     timeout: 10000

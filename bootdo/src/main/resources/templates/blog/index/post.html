@@ -24,7 +24,7 @@
                             <i class="fa fa-user"></i>
                         </div>
                         <div class="author-details">
-                            <span class="author-name" th:text="${bContent.author}">BootDo</span>
+                            <span class="author-name" th:text="${bContent.author} ?: 'Ding'">Ding</span>
                             <span class="publish-date" th:text="${gtmModified}">2024-01-01</span>
                         </div>
                     </div>
@@ -95,7 +95,7 @@
                 <!-- 版权声明 -->
                 <div class="copyright-notice">
                     <i class="fa fa-copyright me-2"></i>
-                    本文为 BootDo 原创文章，转载请注明来源。
+                    本文为 Ding 原创文章，转载请注明来源。
                 </div>
 
                 <!-- 上下篇导航 -->

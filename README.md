@@ -1,92 +1,170 @@
-# BootDo 面向学习型的开源框架
+# Ding的个人技术Blog
 
-## 平台简介
+## 简介
 
-一群[]<a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5ojKYFG"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="BootDo交流群" title="BootDo交流群"></a>
-二群<a target="_blank" href="https://jq.qq.com/?_wv=1027&k=54UlM7d"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="BootDo交流群" title="BootDo交流群"></a>
-三群:<a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5rB9i8M"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="BootDo交流群" title="BootDo交流群"></a>
+这是基于 BootDo 开源框架改造的个人技术博客系统，用于记录和分享技术学习心得。
 
-BootDo是高效率，低封装，面向学习型，面向微服的**开源**Java EE开发框架。
+本博客采用 Spring Boot + MyBatis + Thymeleaf + Shiro 技术栈开发，提供了完整的博客功能和后台管理系统。
 
-BootDo是在SpringBoot基础上搭建的一个Java基础开发平台，MyBatis为数据访问层，ApacheShiro为权限授权层，Ehcahe对常用数据进行缓存。
+## 技术栈
 
-BootDo主要定位于后台管理系统学习交流，已内置后台管理系统的基础功能和高效的**代码生成**工具，
-包括：系统权限组件、数据权限组件、数据字典组件、核心工具组件、视图操作组件、工作流组件、代码生成等。
-前端界面风格采用了结构简单、性能优良、页面美观大气的Twitter Bootstrap页面展示框架。
-采用分层设计、双重验证、提交数据安全编码、密码加密、访问验证、数据权限验证。
-使用Maven做项目管理，提高项目的易开发性、扩展性。
+### 后端技术
+- **Spring Boot** - 核心框架
+- **MyBatis** - 数据访问层（ORM）
+- **Thymeleaf** - 模板引擎
+- **Apache Shiro** - 安全框架（权限认证）
+- **MySQL** - 关系型数据库
+- **Redis** - 缓存
+- **Druid** - 数据库连接池
 
-BootDo目前包括以下四大模块，系统管理（SYS）模块、
-内容管理（CMS）模块、在线办公（OA）模块、代码生成（GEN）模块。 **系统管理模块** ，包括企业组织架构（用户管理、机构管理、区域管理）、
-菜单管理、角色权限管理、字典管理等功能； **内容管理模块** ，包括内容管理（文章、链接），栏目管理、站点管理、
-公共留言、文件管理、前端网站展示等功能； **在线办公模块** ，提供简单的请假流程实例；**代码生成模块** ，完成重复的工作。
+### 前端技术
+- **Bootstrap 5** - 响应式 UI 框架（博客前台）
+- **Bootstrap 3** - UI 框架（后台管理）
+- **jQuery** - JavaScript 库
+- **Font Awesome** - 图标库
+- **Summernote** - 富文本编辑器
+- **ECharts** - 数据可视化图表
+- **Layer** - 弹窗组件
 
-BootDo 提供了常用工具进行封装，包括日志工具、缓存工具、服务器端验证、数据字典、当前组织机构数据
-（用户、机构、区域）以及其它常用小工具等。另外还提供一个强大的在线 **代码生成** 工具。
+## 功能特性
 
-## 内置功能
+### 博客前台
+- 文章列表展示（AJAX 分页加载）
+- 文章详情阅读
+- 分类与标签系统
+- 关于页面
+- 响应式设计（支持移动端）
+- 浅蓝色清新主题
 
-1.	用户管理：用户是系统操作者，该功能主要完成系统用户配置。
-2.	机构管理：配置系统组织机构（公司、部门、小组），树结构展现，可随意调整上下级。
-3.	区域管理：系统城市区域模型，如：国家、省市、地市、区县的维护。
-4.	菜单管理：配置系统菜单，操作权限，按钮权限标识等。
-5.	角色管理：角色菜单权限分配、设置角色按机构进行数据范围权限划分。
-6.	字典管理：对系统中经常使用的一些较为固定的数据进行维护，如：是否、男女、类别、级别等。
-7.	操作日志：系统正常操作日志记录和查询；系统异常信息日志记录和查询。
-8.	连接池监视：监视当期系统数据库连接池状态，可进行分析SQL找出系统性能瓶颈。
-9.	工作流引擎：实现业务工单流转、在线流程设计器。
+### 后台管理
+- 用户管理
+- 角色权限管理
+- 文章内容管理（发布、编辑、删除）
+- 分类/标签管理
+- 文件管理
+- 数据字典管理
+- 操作日志
+- 代码生成工具
+- 系统通知
+- 在线办公（OA）
 
+## 联系方式
 
-## 技术选型
+- **Email**: dingzhaoyan@cumt.edu.cn
+- **QQ**: 1711583904
+- **GitHub**: https://github.com/AlexDDING/bootdo
 
-1、后端
+## 改造说明
 
-* 核心框架：Spring Boot
-* 安全框架：Apache Shiro 
-* 模板引擎：Thymeleaf
-* 持久层框架：MyBatis
-* 数据库连接池：Alibaba Druid 
-* 缓存框架：Ehcache 、Redis
-* 日志管理：SLF4J 
-* 工具类：Apache Commons、Jackson 
+本项目基于 [BootDo](https://github.com/lcg0124/bootdo) 开源框架进行个性化改造，主要改造内容如下：
 
-2、前端
+### UI/UX 改造
+- 采用现代简洁的设计风格
+- 优化配色方案（浅蓝色渐变主题）
+- 改进阅读体验和排版
+- 优化移动端响应式布局
+- 统一使用 CSS 变量管理主题
 
-* JS框架：jQuery
-* 客户端验证：JQuery Validation 
-* 富文本在线编辑：summernote
-* 数据表格：bootstrapTable
-* 弹出层：layer
-* 树结构控件：jsTree
+### 前台博客改造
+- **Hero Banner**: 从深色渐变改为浅蓝白色渐变，清新现代
+- **文章列表**: 优化卡片设计，随机渐变色封面
+- **关于页面**: 完全重写为个人介绍+博客说明
+- **字体优化**: 提升后台管理界面字体大小，增强可读性
 
-4、平台
+### 功能调整
+- 简化为纯博客系统
+- 移除不必要的社交链接
+- 保留完整后台管理功能
+- 更新个人信息和联系方式
+- 移除 ICP 备案信息
 
-* 服务器中间件：SpringBoot内置
-* 数据库支持：目前仅提供MySql数据库的支持，但不限于数据库
-* 开发环境：Java、Eclipse Java EE 、Maven 、Git
+### 代码优化
+- 使用 CSS 变量统一主题管理
+- 改进字体大小和可读性
+- 优化移动端体验
+- 统一视觉风格
 
-## 安全考虑
+## 快速开始
 
-1. 开发语言：系统采用Java 语言开发，具有卓越的通用性、高效性、平台移植性和安全性。
-2. 分层设计：（数据库层，数据访问层，业务逻辑层，展示层）层次清楚，低耦合，各层必须通过接口才能接入并进行参数校验（如：在展示层不可直接操作数据库），保证数据操作的安全。
-3. 双重验证：用户表单提交双验证：包括服务器端验证及客户端验证，防止用户通过浏览器恶意修改（如不可写文本域、隐藏变量篡改、上传非法文件等），跳过客户端验证操作数据库。
-4. 安全编码：用户表单提交所有数据，在服务器端都进行安全编码，防止用户提交非法脚本及SQL注入获取敏感数据等，确保数据安全。
-5. 密码加密：登录用户密码进行SHA1散列加密，此加密方法是不可逆的。保证密文泄露后的安全问题。
-6. 强制访问：系统对所有管理端链接都进行用户身份权限验证，防止用户直接填写url进行访问。
+### 环境要求
+- JDK 1.8+
+- Maven 3.0+
+- MySQL 5.7+
+- Redis（可选）
 
-## 演示地址
+### 运行步骤
 
-## [www.bootdo.com](http://www.bootdo.com)
+1. **克隆项目**
+```bash
+git clone https://github.com/AlexDDING/bootdo.git
+cd bootdo
+```
 
-## 交流反馈
+2. **配置数据库**
+修改 `src/main/resources/application-dev.yml` 中的数据库连接信息
 
-## QQ群 669039323（满），614726589<a target="_blank" href="https://jq.qq.com/?_wv=1027&k=54UlM7d"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="BootDo交流群" title="BootDo交流群"></a>
+3. **初始化数据库**
+执行 SQL 脚本（如有的话）
 
-## 版权声明
+4. **运行项目**
+```bash
+mvn spring-boot:run
+```
 
-本软件使用 [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0) 协议，请严格遵照协议内容
+5. **访问系统**
+- 博客前台: http://localhost:8080/
+- 后台管理: http://localhost:8080/login
 
-- [x] 注：已上内容为整体规化，部分功能还在实现中
+## 项目结构
 
-如果感觉对您有帮助，请作者喝杯咖啡吧，请注明您的名字或者昵称，方便作者感谢o(*￣︶￣*)o
-![输入图片说明](https://gitee.com/uploads/images/2018/0228/172207_751b45c4_1204498.jpeg "843167056429717736.jpg")![输入图片说明](https://gitee.com/uploads/images/2018/0228/172216_fbcc5c30_1204498.jpeg "12959670678378076.jpg")
+```
+bootdo/
+├── src/main/
+│   ├── java/
+│   │   └── com/
+│   │       └── bootdo/
+│   │           ├── BootdoApplication.java
+│   │           ├── controller/     # 控制器层
+│   │           ├── service/        # 业务逻辑层
+│   │           ├── mapper/         # 数据访问层
+│   │           ├── domain/         # 实体类
+│   │           ├── shiro/          # 安全配置
+│   │           └── util/           # 工具类
+│   └── resources/
+│       ├── templates/              # Thymeleaf 模板
+│       │   ├── blog/              # 博客前台模板
+│       │   ├── login.html        # 登录页
+│       │   └── index_v1.html     # 后台主框架
+│       ├── static/
+│       │   ├── css/              # 样式文件
+│       │   ├── js/               # JavaScript 文件
+│       │   └── img/              # 图片资源
+│       └── application.yml       # 配置文件
+└── README.md
+```
+
+## 许可证
+
+本博客基于 BootDo (Apache License 2.0) 进行改造，遵循原协议。
+
+> BootDo 是高效率，低封装，面向学习型，面向微服务的**开源**Java EE开发框架。
+
+---
+
+## 改造历史
+
+### 2024年12月 - 个人化改造
+- 完成UI风格现代化
+- 更新个人信息和联系方式
+- 优化配色和字体
+- 简化功能模块
+- 添加浅蓝色清新主题
+- 改进前台博客阅读体验
+
+---
+
+## 致谢
+
+感谢 BootDo 原作者提供的优秀开源框架！
+
+如有问题或建议，欢迎通过以上联系方式与我交流。

@@ -2,7 +2,7 @@
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="blog/index/include_blog :: header">
     <meta charset="utf-8">
-    <title th:text="${bContent.title} ?: '自定义页面' - BootDo">自定义页面 - BootDo</title>
+    <title th:text="${bContent.title} ?: '自定义页面' - Ding的技术Blog">自定义页面 - Ding的技术Blog</title>
 </head>
 
 <body>
@@ -36,7 +36,7 @@
                     <!-- 页面内容 -->
                     <div class="page-content-body" th:utext="${bContent.content}">
                         <!-- 示例内容 -->
-                        <h2>欢迎使用 BootDo</h2>
+                        <h2>欢迎使用 Ding 的技术Blog</h2>
                         <p>这是一个自定义页面模板，您可以在这里创建任何类型的内容页面。</p>
                         <h3>功能特点</h3>
                         <ul>

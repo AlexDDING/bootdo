@@ -16,9 +16,9 @@
             <div class="col-lg-10">
                 <div class="hero-content">
                     <h1 class="hero-title">
-                        <span class="text-gradient">BootDo Blog</span>
+                        <span class="text-gradient">Ding的技术Blog</span>
                     </h1>
-                    <p class="hero-subtitle">面向学习型的开源框架，简洁高效，展现技术本质</p>
+                    <p class="hero-subtitle">技术学习与分享，记录成长路上的点滴</p>
                     <div class="hero-meta">
                         <span><i class="fa fa-code me-2"></i>Spring Boot + MyBatis</span>
                         <span class="mx-3">•</span>
@@ -72,7 +72,7 @@
                         <h5><i class="fa fa-user-circle me-2"></i>关于</h5>
                     </div>
                     <div class="sidebar-card-body">
-                        <p class="mb-0">BootDo 是面向学习型的开源框架，采用 Spring Boot + MyBatis + Thymeleaf + Shiro 技术栈，简洁高效，减少过渡封装，展现技术本质。</p>
+                        <p class="mb-0">欢迎来到我的个人技术博客！这里主要记录我在学习和开发过程中的心得体会，分享技术经验和项目实践。</p>
                     </div>
                 </div>
 
@@ -83,17 +83,9 @@
                     </div>
                     <div class="sidebar-card-body">
                         <div class="quick-links">
-                            <a href="https://github.com/lcg0124/bootdo" target="_blank" rel="noopener">
+                            <a href="https://github.com/AlexDDING/bootdo" target="_blank" rel="noopener">
                                 <i class="fa fa-github"></i>
                                 <span>GitHub</span>
-                            </a>
-                            <a href="https://gitee.com/lcg0124/bootdo" target="_blank" rel="noopener">
-                                <i class="fa fa-git"></i>
-                                <span>Gitee</span>
-                            </a>
-                            <a href="https://www.oschina.net/p/bootdo" target="_blank" rel="noopener">
-                                <i class="fa fa-home"></i>
-                                <span>OSChina</span>
                             </a>
                             <a href="/login">
                                 <i class="fa fa-lock"></i>
@@ -142,7 +134,7 @@
     position: relative;
     padding-top: 160px;
     padding-bottom: 120px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    background: linear-gradient(135deg, #E0F7FA 0%, #E3F2FD 50%, #FFFFFF 100%);
     overflow: hidden;
 }
 
@@ -152,14 +144,14 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3), transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.3), transparent 50%);
+    background: radial-gradient(circle at 20% 50%, rgba(144, 202, 249, 0.3), transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(187, 222, 251, 0.3), transparent 50%);
     pointer-events: none;
 }
 
 .hero-content {
     text-align: center;
-    color: #FFFFFF;
+    color: var(--text-main);
     position: relative;
     z-index: 1;
 }
@@ -172,7 +164,7 @@
 }
 
 .hero-title .text-gradient {
-    background: linear-gradient(135deg, #FFFFFF 0%, rgba(255, 255, 255, 0.85) 100%);
+    background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -180,7 +172,7 @@
 
 .hero-subtitle {
     font-size: 1.25rem;
-    opacity: 0.95;
+    color: var(--text-secondary);
     margin-bottom: 2rem;
     font-weight: 300;
 }
@@ -191,7 +183,7 @@
     justify-content: center;
     gap: 1rem;
     font-size: 0.9375rem;
-    opacity: 0.9;
+    color: var(--text-secondary);
 }
 
 .hero-wave {
@@ -651,7 +643,7 @@ function renderArticles(articles) {
         html += '        </h3>';
         html += '        <p class="article-excerpt">' + escapeHtml(article.content || '暂无摘要') + '</p>';
         html += '        <div class="article-meta">';
-        html += '            <span class="article-meta-item"><i class="fa fa-user"></i><a href="#">' + escapeHtml(article.author || 'BootDo') + '</a></span>';
+        html += '            <span class="article-meta-item"><i class="fa fa-user"></i><a href="#">' + escapeHtml(article.author || 'Ding') + '</a></span>';
         html += '            <span class="article-meta-item"><i class="fa fa-clock-o"></i>' + (article.gtmModified || '') + '</span>';
         html += '        </div>';
         html += '    </div>';

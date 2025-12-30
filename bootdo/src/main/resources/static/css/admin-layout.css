@@ -36,6 +36,53 @@
 }
 
 /* ============================================
+   全局字体大小优化
+   ============================================ */
+/* 确保最小字体大小为 13px，提升可读性 */
+body {
+    font-size: 14px !important;
+}
+
+/* 提升按钮、输入框、下拉菜单的字体大小 */
+.navbar-top-links > li > a,
+.dropdown-menu > li > a,
+.btn,
+.form-control,
+.input-sm,
+.input-group-addon,
+.nav-tabs > li > a,
+.pagination > li > a {
+    font-size: 13px !important;
+    min-height: auto;
+}
+
+/* 提升表格字体大小 */
+table {
+    font-size: 13px !important;
+}
+
+/* 提升面板和卡片内容字体大小 */
+.panel,
+.card,
+.ibox {
+    font-size: 13px !important;
+}
+
+/* 提升文本区域字体大小 */
+textarea,
+code,
+pre {
+    font-size: 13px !important;
+}
+
+/* 确保标签和徽章有合适的字体大小 */
+.label,
+.badge,
+.tag {
+    font-size: 11px !important;
+}
+
+/* ============================================
    侧边栏 (Sidebar) 现代化
    ============================================ */
 

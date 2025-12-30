@@ -1,45 +1,1019 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>欢迎页</title>
+    <title>数据概览 - BootDo管理系统</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <!-- Animate.css -->
+    <link href="/css/animate.css" rel="stylesheet">
+    <!-- Modern Style -->
+    <link href="/css/modern-style.css?v=1.0.0" rel="stylesheet">
+
+    <style>
+        /* ============================================
+           仪表盘专用样式
+           ============================================ */
+
+        /* 页面容器 */
+        .dashboard-container {
+            padding: 20px;
+            background-color: var(--color-bg);
+            min-height: 100vh;
+        }
+
+        /* 页面标题 */
+        .page-header {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .page-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .page-header p {
+            margin: 4px 0 0 0;
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* ============================================
+           统计卡片 (Stat Cards)
+           ============================================ */
+
+        .stat-card {
+            background-color: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-base);
+            height: 100%;
+            border: 1px solid var(--color-border-light);
+        }
+
+        .stat-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .stat-card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+        }
+
+        /* 图标背景色变体 */
+        .stat-card-icon.icon-blue {
+            background-color: var(--color-primary-light);
+            color: var(--color-primary);
+        }
+
+        .stat-card-icon.icon-green {
+            background-color: #D1FAE5;
+            color: var(--color-success);
+        }
+
+        .stat-card-icon.icon-orange {
+            background-color: #FED7AA;
+            color: var(--color-warning);
+        }
+
+        .stat-card-icon.icon-purple {
+            background-color: #E0E7FF;
+            color: var(--color-info);
+        }
+
+        .stat-card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-text);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-card-label {
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 12px;
+        }
+
+        .stat-card-trend {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+        }
+
+        .stat-card-trend.trend-up {
+            background-color: #D1FAE5;
+            color: #065F46;
+        }
+
+        .stat-card-trend.trend-down {
+            background-color: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .stat-card-trend.trend-neutral {
+            background-color: var(--color-bg-alt);
+            color: var(--color-text-secondary);
+        }
+
+        .stat-card-trend i {
+            margin-right: 4px;
+        }
+
+        /* ============================================
+           图表容器 (Chart Containers)
+           ============================================ */
+
+        .chart-card {
+            background-color: var(--color-surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            border: 1px solid var(--color-border-light);
+        }
+
+        .chart-card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chart-card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--color-text);
+            margin: 0;
+        }
+
+        .chart-card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chart-card-btn {
+            background-color: transparent;
+            border: 1px solid var(--color-border);
+            color: var(--color-text-secondary);
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8125rem;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+        }
+
+        .chart-card-btn:hover {
+            background-color: var(--color-bg-alt);
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .chart-card-btn i {
+            margin-right: 4px;
+        }
+
+        .chart-card-body {
+            padding: 24px;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 320px;
+        }
+
+        /* ============================================
+           时间轴样式 (Timeline)
+           ============================================ */
+
+        .timeline-card {
+            background-color: var(--color-surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--color-border-light);
+            overflow: hidden;
+        }
+
+        .timeline-card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .timeline-card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--color-text);
+            margin: 0;
+        }
+
+        .timeline-card-body {
+            padding: 24px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 32px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-border-light) 100%);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 24px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -28px;
+            top: 4px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--color-surface);
+            border: 3px solid var(--color-primary);
+            z-index: 1;
+        }
+
+        .timeline-item.timeline-item-success::before {
+            border-color: var(--color-success);
+        }
+
+        .timeline-item.timeline-item-warning::before {
+            border-color: var(--color-warning);
+        }
+
+        .timeline-item.timeline-item-info::before {
+            border-color: var(--color-info);
+        }
+
+        .timeline-content {
+            background-color: var(--color-bg-alt);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            transition: all var(--transition-fast);
+        }
+
+        .timeline-content:hover {
+            background-color: var(--color-hover-bg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .timeline-time {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            margin-bottom: 4px;
+        }
+
+        .timeline-title {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 4px;
+        }
+
+        .timeline-title a {
+            color: var(--color-text);
+            transition: color var(--transition-fast);
+        }
+
+        .timeline-title a:hover {
+            color: var(--color-primary);
+        }
+
+        .timeline-desc {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        .timeline-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .timeline-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .timeline-tag.tag-blue {
+            background-color: var(--color-primary-light);
+            color: var(--color-primary);
+        }
+
+        .timeline-tag.tag-green {
+            background-color: #D1FAE5;
+            color: var(--color-success);
+        }
+
+        .timeline-tag.tag-orange {
+            background-color: #FED7AA;
+            color: var(--color-warning);
+        }
+
+        /* ============================================
+           快捷操作卡片
+           ============================================ */
+
+        .quick-actions-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            color: #FFFFFF;
+            box-shadow: var(--shadow-md);
+        }
+
+        .quick-actions-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .quick-actions-desc {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .quick-actions-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .quick-action-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #FFFFFF;
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+        }
+
+        .quick-action-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .quick-action-btn i {
+            margin-right: 6px;
+        }
+
+        /* ============================================
+           项目信息卡片
+           ============================================ */
+
+        .project-info-card {
+            background-color: var(--color-surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 24px;
+            border: 1px solid var(--color-border-light);
+        }
+
+        .project-info-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .project-info-title i {
+            margin-right: 8px;
+            color: var(--color-primary);
+        }
+
+        .project-info-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .project-info-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+
+        .project-info-item:last-child {
+            border-bottom: none;
+        }
+
+        .project-info-item i {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-sm);
+            background-color: var(--color-bg-alt);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-secondary);
+            margin-right: 12px;
+        }
+
+        .project-info-content {
+            flex: 1;
+        }
+
+        .project-info-label {
+            font-size: 0.8125rem;
+            color: var(--color-text-muted);
+            margin-bottom: 2px;
+        }
+
+        .project-info-value {
+            font-size: 0.875rem;
+            color: var(--color-text);
+            font-weight: 500;
+        }
+
+        .project-info-value a {
+            color: var(--color-primary);
+            transition: color var(--transition-fast);
+        }
+
+        .project-info-value a:hover {
+            color: var(--color-primary-hover);
+        }
+
+        /* ============================================
+           响应式设计
+           ============================================ */
+        @media (max-width: 992px) {
+            .stat-card {
+                margin-bottom: 16px;
+            }
+
+            .chart-card {
+                margin-bottom: 16px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 12px;
+            }
+
+            .page-header {
+                margin-bottom: 16px;
+            }
+
+            .stat-card {
+                padding: 20px;
+            }
+
+            .stat-card-value {
+                font-size: 1.75rem;
+            }
+
+            .chart-card-header,
+            .chart-card-body {
+                padding: 16px;
+            }
+
+            .chart-container {
+                height: 240px;
+            }
+
+            .timeline-card-header,
+            .timeline-card-body {
+                padding: 16px;
+            }
+
+            .timeline {
+                padding-left: 24px;
+            }
+
+            .timeline::before {
+                left: 5px;
+            }
+
+            .timeline-item::before {
+                left: -20px;
+            }
+        }
+
+        /* ============================================
+           动画效果
+           ============================================ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-card,
+        .chart-card,
+        .timeline-card {
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.05s; }
+        .stat-card:nth-child(2) { animation-delay: 0.1s; }
+        .stat-card:nth-child(3) { animation-delay: 0.15s; }
+        .stat-card:nth-child(4) { animation-delay: 0.2s; }
+    </style>
 </head>
 <body>
-<div class="panel panel-default">
-    <div class="panel-heading">了解BootDo</div>
-    <div style="padding: 10px 0 20px 10px;">
-        <h3>&nbsp;&nbsp;&nbsp;项目介绍</h3>
-        <ul>
-            <li>面向学习型的开源框架，简洁高效，减少过渡封装，展现技术本质</li>
-            <li>Springboot作为基础框架，使用mybatis作为持久层框架</li>
-            <li>使用官方推荐的thymeleaf做为模板引擎，shiro作为安全框架,主流技术，“一网打尽”</li>
-            <li>极简配置，一键前后台代码生成</li>
-        </ul>
+<div class="dashboard-container">
+    <!-- 页面标题 -->
+    <div class="page-header">
+        <h2>数据概览</h2>
+        <p>欢迎回来，这是您的系统数据仪表盘</p>
+    </div>
 
-        <h3>&nbsp;&nbsp;&nbsp;获取源码</h3>
-        <ul>
-            <li>Github地址：<a href="https://github.com/lcg0124/bootdo.git"
-                            th:href="@{https://github.com/lcg0124/bootdo.git}" target="_blank">https://github.com/lcg0124/bootdo.git</a>
-            </li>
-            <li>Oschina地址：<a href="https://gitee.com/lcg0124/bootdo.git" target="_blank">https://gitee.com/lcg0124/bootdo.git</a>
-            </li>
-        </ul>
+    <!-- 统计卡片行 -->
+    <div class="row">
+        <!-- 文章数 -->
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card">
+                <div class="stat-card-icon icon-blue">
+                    <i class="fa fa-file-text-o"></i>
+                </div>
+                <div class="stat-card-value">1,284</div>
+                <div class="stat-card-label">文章总数</div>
+                <div class="stat-card-trend trend-up">
+                    <i class="fa fa-arrow-up"></i> 较昨日 +12%
+                </div>
+            </div>
+        </div>
 
-        <h3>&nbsp;&nbsp;&nbsp;官方QQ群</h3>
-        <ul>
-            <li>点击链接加入群聊【BootDo交流群】：<a href="https://jq.qq.com/?_wv=1027&k=5EYXfiZ">669039323</a></li>
-            <li>点击链接加入群聊【BootDo交流二群】：<a href="https://jq.qq.com/?_wv=1027&k=5M659N4">614726589</a></li>
-            <li>点击链接加入群聊【BootDo交流三群】：<a href="https://jq.qq.com/?_wv=1027&k=5tE3A9O">600801035</a></li>
-            <li>点击链接加入群聊【CloudDo交流群】：<a href="https://jq.qq.com/?_wv=1027&k=5Zk12Xl">719741533</a></li>
-        </ul>
+        <!-- 访客数 -->
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card">
+                <div class="stat-card-icon icon-green">
+                    <i class="fa fa-users"></i>
+                </div>
+                <div class="stat-card-value">8,532</div>
+                <div class="stat-card-label">今日访客</div>
+                <div class="stat-card-trend trend-up">
+                    <i class="fa fa-arrow-up"></i> 较昨日 +8%
+                </div>
+            </div>
+        </div>
 
-        <button class="btn" onclick="openPage('http://bootdo.com','bootdo.com')">访问bootdo官网(新打开tab页事例)</button>
+        <!-- 评论数 -->
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card">
+                <div class="stat-card-icon icon-orange">
+                    <i class="fa fa-comments-o"></i>
+                </div>
+                <div class="stat-card-value">3,421</div>
+                <div class="stat-card-label">评论总数</div>
+                <div class="stat-card-trend trend-neutral">
+                    <i class="fa fa-minus"></i> 较昨日 持平
+                </div>
+            </div>
+        </div>
+
+        <!-- 浏览量 -->
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card">
+                <div class="stat-card-icon icon-purple">
+                    <i class="fa fa-eye"></i>
+                </div>
+                <div class="stat-card-value">156K</div>
+                <div class="stat-card-label">总浏览量</div>
+                <div class="stat-card-trend trend-up">
+                    <i class="fa fa-arrow-up"></i> 较上周 +23%
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 图表行 -->
+    <div class="row" style="margin-top: 24px;">
+        <!-- 访问趋势图 -->
+        <div class="col-lg-8">
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <h3 class="chart-card-title">访问趋势</h3>
+                    <div class="chart-card-actions">
+                        <button class="chart-card-btn" onclick="refreshChart('trend')">
+                            <i class="fa fa-refresh"></i> 刷新
+                        </button>
+                        <button class="chart-card-btn">
+                            <i class="fa fa-download"></i> 导出
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-card-body">
+                    <div id="trendChart" class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据分布图 -->
+        <div class="col-lg-4">
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <h3 class="chart-card-title">内容分布</h3>
+                    <div class="chart-card-actions">
+                        <button class="chart-card-btn" onclick="refreshChart('pie')">
+                            <i class="fa fa-refresh"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-card-body">
+                    <div id="pieChart" class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部行 -->
+    <div class="row" style="margin-top: 24px;">
+        <!-- 最新动态 -->
+        <div class="col-lg-7">
+            <div class="timeline-card">
+                <div class="timeline-card-header">
+                    <h3 class="timeline-card-title">最新动态</h3>
+                    <a href="#" class="chart-card-btn">查看全部</a>
+                </div>
+                <div class="timeline-card-body">
+                    <div class="timeline">
+                        <!-- 动态项 1 -->
+                        <div class="timeline-item timeline-item-success">
+                            <div class="timeline-content">
+                                <div class="timeline-time">5分钟前</div>
+                                <div class="timeline-title">
+                                    <a href="#">新文章《Spring Boot 3.0 新特性详解》已发布</a>
+                                </div>
+                                <div class="timeline-desc">文章介绍了 Spring Boot 3.0 的主要更新内容...</div>
+                                <div class="timeline-meta">
+                                    <span class="timeline-tag tag-blue">技术</span>
+                                    <span class="timeline-tag tag-green">已发布</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 动态项 2 -->
+                        <div class="timeline-item timeline-item-info">
+                            <div class="timeline-content">
+                                <div class="timeline-time">1小时前</div>
+                                <div class="timeline-title">
+                                    <a href="#">用户"张三"发表了新评论</a>
+                                </div>
+                                <div class="timeline-desc">在《MyBatis 最佳实践》下留言...</div>
+                                <div class="timeline-meta">
+                                    <span class="timeline-tag tag-orange">评论</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 动态项 3 -->
+                        <div class="timeline-item timeline-item-warning">
+                            <div class="timeline-content">
+                                <div class="timeline-time">3小时前</div>
+                                <div class="timeline-title">
+                                    <a href="#">系统进行了例行维护</a>
+                                </div>
+                                <div class="timeline-desc">完成了服务器安全补丁更新和数据库优化...</div>
+                                <div class="timeline-meta">
+                                    <span class="timeline-tag tag-blue">系统</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 动态项 4 -->
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <div class="timeline-time">昨天</div>
+                                <div class="timeline-title">
+                                    <a href="#">新增用户注册量突破1000</a>
+                                </div>
+                                <div class="timeline-desc">本月新增用户数达到历史新高...</div>
+                                <div class="timeline-meta">
+                                    <span class="timeline-tag tag-green">里程碑</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 动态项 5 -->
+                        <div class="timeline-item timeline-item-success">
+                            <div class="timeline-content">
+                                <div class="timeline-time">2天前</div>
+                                <div class="timeline-title">
+                                    <a href="#">BootDo v2.0 版本发布</a>
+                                </div>
+                                <div class="timeline-desc">全新UI设计，更多功能优化...</div>
+                                <div class="timeline-meta">
+                                    <span class="timeline-tag tag-blue">版本</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧栏 -->
+        <div class="col-lg-5">
+            <div class="row">
+                <!-- 快捷操作 -->
+                <div class="col-sm-12" style="margin-bottom: 16px;">
+                    <div class="quick-actions-card">
+                        <div class="quick-actions-title">快捷操作</div>
+                        <div class="quick-actions-desc">快速访问常用功能</div>
+                        <div class="quick-actions-list">
+                            <button class="quick-action-btn" onclick="openNewPage('/blog/edit')">
+                                <i class="fa fa-plus"></i> 写文章
+                            </button>
+                            <button class="quick-action-btn" onclick="openNewPage('/sys/user')">
+                                <i class="fa fa-users"></i> 用户管理
+                            </button>
+                            <button class="quick-action-btn" onclick="openNewPage('/sys/config')">
+                                <i class="fa fa-gear"></i> 系统设置
+                            </button>
+                            <button class="quick-action-btn" onclick="openNewPage('/blog')">
+                                <i class="fa fa-list"></i> 文章列表
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 项目信息 -->
+                <div class="col-sm-12">
+                    <div class="project-info-card">
+                        <div class="project-info-title">
+                            <i class="fa fa-info-circle"></i>
+                            关于 BootDo
+                        </div>
+                        <ul class="project-info-list">
+                            <li class="project-info-item">
+                                <i class="fa fa-code"></i>
+                                <div class="project-info-content">
+                                    <div class="project-info-label">技术栈</div>
+                                    <div class="project-info-value">Spring Boot + MyBatis + Thymeleaf + Shiro</div>
+                                </div>
+                            </li>
+                            <li class="project-info-item">
+                                <i class="fa fa-github"></i>
+                                <div class="project-info-content">
+                                    <div class="project-info-label">GitHub</div>
+                                    <div class="project-info-value">
+                                        <a href="https://github.com/lcg0124/bootdo" target="_blank">github.com/lcg0124/bootdo</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="project-info-item">
+                                <i class="fa fa-git"></i>
+                                <div class="project-info-content">
+                                    <div class="project-info-label">Gitee</div>
+                                    <div class="project-info-value">
+                                        <a href="https://gitee.com/lcg0124/bootdo" target="_blank">gitee.com/lcg0124/bootdo</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="project-info-item">
+                                <i class="fa fa-qq"></i>
+                                <div class="project-info-content">
+                                    <div class="project-info-label">交流群</div>
+                                    <div class="project-info-value">
+                                        <a href="https://jq.qq.com/?_wv=1027&k=5EYXfiZ" target="_blank">669039323</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- ECharts -->
+<script src="/js/plugins/echarts/echarts.min.js"></script>
+
+<script>
+    // 初始化图表
+    function initCharts() {
+        initTrendChart();
+        initPieChart();
+    }
+
+    // 访问趋势图
+    function initTrendChart() {
+        const chart = echarts.init(document.getElementById('trendChart'));
+        const option = {
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            tooltip: {
+                trigger: 'axis',
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                borderColor: '#E5E7EB',
+                borderWidth: 1,
+                textStyle: {
+                    color: '#1F2937'
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                axisLine: {
+                    lineStyle: { color: '#E5E7EB' }
+                },
+                axisLabel: {
+                    color: '#6B7280'
+                }
+            },
+            yAxis: {
+                type: 'value',
+                axisLine: {
+                    show: false
+                },
+                axisLabel: {
+                    color: '#6B7280'
+                },
+                splitLine: {
+                    lineStyle: { color: '#F3F4F6' }
+                }
+            },
+            series: [{
+                name: '访问量',
+                type: 'line',
+                smooth: true,
+                symbol: 'circle',
+                symbolSize: 6,
+                lineStyle: {
+                    width: 3,
+                    color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [{
+                        offset: 0,
+                        color: '#3B82F6'
+                    }, {
+                        offset: 1,
+                        color: '#6366F1'
+                    }])
+                },
+                itemStyle: {
+                    color: '#3B82F6',
+                    borderColor: '#FFFFFF',
+                    borderWidth: 2
+                },
+                areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: 'rgba(59, 130, 246, 0.3)'
+                    }, {
+                        offset: 1,
+                        color: 'rgba(59, 130, 246, 0.05)'
+                    }])
+                },
+                data: [820, 932, 901, 934, 1290, 1330, 1320]
+            }]
+        };
+        chart.setOption(option);
+
+        // 响应式
+        window.addEventListener('resize', function() {
+            chart.resize();
+        });
+    }
+
+    // 内容分布饼图
+    function initPieChart() {
+        const chart = echarts.init(document.getElementById('pieChart'));
+        const option = {
+            tooltip: {
+                trigger: 'item',
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                borderColor: '#E5E7EB',
+                borderWidth: 1,
+                textStyle: {
+                    color: '#1F2937'
+                }
+            },
+            legend: {
+                bottom: '0%',
+                left: 'center',
+                textStyle: {
+                    color: '#6B7280',
+                    fontSize: 12
+                }
+            },
+            series: [{
+                name: '文章分类',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                avoidLabelOverlap: false,
+                itemStyle: {
+                    borderRadius: 8,
+                    borderColor: '#FFFFFF',
+                    borderWidth: 2
+                },
+                label: {
+                    show: false,
+                    position: 'center'
+                },
+                emphasis: {
+                    label: {
+                        show: true,
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        color: '#1F2937'
+                    }
+                },
+                labelLine: {
+                    show: false
+                },
+                data: [
+                    { value: 428, name: '技术文章', itemStyle: { color: '#3B82F6' } },
+                    { value: 356, name: '生活随笔', itemStyle: { color: '#10B981' } },
+                    { value: 289, name: '学习笔记', itemStyle: { color: '#F59E0B' } },
+                    { value: 211, name: '项目经验', itemStyle: { color: '#6366F1' } }
+                ]
+            }]
+        };
+        chart.setOption(option);
+
+        // 响应式
+        window.addEventListener('resize', function() {
+            chart.resize();
+        });
+    }
+
+    // 刷新图表
+    function refreshChart(type) {
+        if (type === 'trend') {
+            initTrendChart();
+        } else if (type === 'pie') {
+            initPieChart();
+        }
+    }
+
+    // 打开新页面（在父级 iframe 中）
+    function openNewPage(url) {
+        if (parent && parent.openTab) {
+            parent.openTab(url);
+        } else {
+            window.location.href = url;
+        }
+    }
+
+    // 页面加载完成后初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof echarts !== 'undefined') {
+            initCharts();
+        }
+    });
+</script>
 </body>
-<script src="js/jquery.min.js"></script>
-<script src="js/openTab.js"></script>
 </html>

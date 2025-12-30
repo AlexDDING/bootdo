@@ -1,47 +1,955 @@
 <!DOCTYPE html>
-<html>
-<meta charset="utf-8">
-<head th:include="blog/index/include_blog::header"></head>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="blog/index/include_blog :: header">
+    <meta charset="utf-8">
+</head>
+
 <body>
-	<nav th:include="blog/index/include_blog::nav"  class="navbar navbar-default navbar-custom navbar-fixed-top" ></nav>
-	<!-- Page Header -->
-	<header class="intro-header"
-		style="background-image: url('/img/blog/post-bg.jpg')">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-					<div class="post-heading">
-						<h1 th:text="${bContent.title}"></h1>
-						<span class="meta">作者 <a href="#"
-							th:text="${bContent.author}"></a>&nbsp;&nbsp;<a href="#"
-							th:text="${gtmModified}"></a>
-						</span>
-					</div>
-				</div>
-			</div>
-		</div>
-	</header>
+<!-- 导航栏 -->
+<nav th:replace="blog/index/include_blog :: header"></nav>
 
-	<!-- Post Content -->
-	<article>
-		<div class="container">
-			<div class="col-sm-11">
-				<div id="content" class="summernote"></div>
-			</div>
+<!-- 文章头部 -->
+<header class="article-header">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- 文章标题 -->
+                <h1 class="article-title" th:text="${bContent.title}">文章标题</h1>
 
-		</div>
-	</article>
-	<hr>
-	<div th:include="blog/index/include_blog::footer"></div>
-	<script type="text/javascript" th:inline="javascript">
-		$().ready(function() {
-			$('.summernote').summernote({
-				lang : 'zh-CN'
-			});
-			var content = /*[[${bContent.content}]]*/
-			$('#content').code(content);
-			$('.summernote').destroy();
-		});
-	</script>
+                <!-- 文章元数据 -->
+                <div class="article-meta-wrapper">
+                    <!-- 作者信息 -->
+                    <div class="author-info">
+                        <div class="author-avatar">
+                            <i class="fa fa-user"></i>
+                        </div>
+                        <div class="author-details">
+                            <span class="author-name" th:text="${bContent.author}">BootDo</span>
+                            <span class="publish-date" th:text="${gtmModified}">2024-01-01</span>
+                        </div>
+                    </div>
+
+                    <!-- 统计信息 -->
+                    <div class="article-stats">
+                        <span class="stat-item">
+                            <i class="fa fa-eye"></i>
+                            <span th:text="${views} ?: '0'">0</span> 阅读
+                        </span>
+                        <span class="stat-item">
+                            <i class="fa fa-clock-o"></i>
+                            <span th:text="${readingTime} ?: '5'">5</span> 分钟
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 文章标签 -->
+                <div class="article-tags" th:if="${tags}">
+                    <a href="#" class="article-tag tag-blue" th:each="tag : ${tags}" th:text="${tag}">标签</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分割线 -->
+    <div class="header-divider"></div>
+</header>
+
+<!-- 主内容区 -->
+<main class="article-main">
+    <div class="container">
+        <div class="row">
+            <!-- 文章正文 - 窄栏布局 -->
+            <div class="col-lg-8 offset-lg-2">
+                <article class="article-content">
+                    <!-- Markdown 内容容器 -->
+                    <div id="markdown-view" class="markdown-view" th:utext="${bContent.content}">
+                        <!-- 文章内容将在此渲染 -->
+                    </div>
+                </article>
+
+                <!-- 文章底部操作 -->
+                <div class="article-footer">
+                    <!-- 点赞 -->
+                    <div class="like-section">
+                        <button class="btn-like" onclick="likeArticle()">
+                            <i class="fa fa-heart-o"></i>
+                            <span>喜欢</span>
+                        </button>
+                    </div>
+
+                    <!-- 分享 -->
+                    <div class="share-section">
+                        <span class="share-label">分享：</span>
+                        <a href="#" class="share-btn" onclick="shareToWeibo()" title="分享到微博">
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                        <a href="#" class="share-btn" onclick="shareToQQ()" title="分享到QQ">
+                            <i class="fa fa-qq"></i>
+                        </a>
+                        <a href="#" class="share-btn" onclick="copyLink()" title="复制链接">
+                            <i class="fa fa-link"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 版权声明 -->
+                <div class="copyright-notice">
+                    <i class="fa fa-copyright me-2"></i>
+                    本文为 BootDo 原创文章，转载请注明来源。
+                </div>
+
+                <!-- 上下篇导航 -->
+                <div class="article-navigation">
+                    <a class="nav-prev" href="#" th:if="${prevArticle}">
+                        <i class="fa fa-chevron-left me-2"></i>
+                        <span class="nav-label">上一篇</span>
+                        <span class="nav-title" th:text="${prevArticle.title}">上一篇标题</span>
+                    </a>
+                    <a class="nav-next" href="#" th:if="${nextArticle}">
+                        <span class="nav-label">下一篇</span>
+                        <span class="nav-title" th:text="${nextArticle.title}">下一篇标题</span>
+                        <i class="fa fa-chevron-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- 侧边目录（大屏显示） -->
+<aside class="toc-sidebar" id="tocSidebar">
+    <div class="toc-container">
+        <div class="toc-header">
+            <h5><i class="fa fa-list me-2"></i>目录</h5>
+        </div>
+        <div class="toc-content" id="tocContent">
+            <!-- 目录将通过 JS 自动生成 -->
+            <p class="toc-empty">暂无目录</p>
+        </div>
+    </div>
+</aside>
+
+<!-- 页脚 -->
+<footer th:replace="blog/index/include_blog :: footer"></footer>
+
+<!-- 脚本 -->
+<div th:replace="blog/index/include_blog :: scripts"></div>
+<script th:replace="blog/index/include_blog :: navbar-script"></script>
+<script th:replace="blog/index/include_blog :: back-to-top-script"></script>
+
+<style>
+/* ============================================
+   文章页专用样式
+   ============================================ */
+
+/* 页面顶部留白（为固定导航栏） */
+body {
+    padding-top: 72px;
+}
+
+/* ============================================
+   文章头部
+   ============================================ */
+.article-header {
+    padding: 48px 0 0;
+}
+
+.article-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.3;
+    margin-bottom: 24px;
+    text-align: center;
+    letter-spacing: -0.02em;
+}
+
+/* 作者信息 */
+.article-meta-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 20px;
+}
+
+.author-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.author-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), #6366F1);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.125rem;
+}
+
+.author-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.author-name {
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 0.9375rem;
+}
+
+.publish-date {
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+}
+
+/* 统计信息 */
+.article-stats {
+    display: flex;
+    gap: 20px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+.stat-item i {
+    font-size: 0.9375rem;
+}
+
+/* 文章标签 */
+.article-tags {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.article-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 16px;
+    border-radius: var(--radius-full);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    transition: var(--transition-fast);
+}
+
+/* 分割线 */
+.header-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+    margin: 32px auto 0;
+    max-width: 600px;
+}
+
+/* ============================================
+   文章主内容
+   ============================================ */
+.article-main {
+    padding: 48px 0 64px;
+}
+
+/* Markdown 内容容器 */
+.markdown-view {
+    /* 排版优化 */
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-main);
+}
+
+.markdown-view::v-deep * {
+    max-width: 100%;
+}
+
+/* 标题样式 */
+.markdown-view h1,
+.markdown-view h2,
+.markdown-view h3,
+.markdown-view h4,
+.markdown-view h5,
+.markdown-view h6 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.markdown-view h1 {
+    font-size: 2rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.markdown-view h2 {
+    font-size: 1.625rem;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 0.375rem;
+}
+
+.markdown-view h3 {
+    font-size: 1.375rem;
+}
+
+.markdown-view h4 {
+    font-size: 1.125rem;
+}
+
+/* 段落 */
+.markdown-view p {
+    margin-bottom: 2rem;
+}
+
+/* 链接 */
+.markdown-view a {
+    color: var(--primary-color);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: var(--transition-fast);
+}
+
+.markdown-view a:hover {
+    border-bottom-color: var(--primary-color);
+}
+
+/* 列表 */
+.markdown-view ul,
+.markdown-view ol {
+    margin-bottom: 2rem;
+    padding-left: 2rem;
+}
+
+.markdown-view li {
+    margin-bottom: 0.5rem;
+}
+
+.markdown-view ul li {
+    list-style-type: disc;
+}
+
+.markdown-view ol li {
+    list-style-type: decimal;
+}
+
+.markdown-view ul ul,
+.markdown-view ol ol {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* 引用 */
+.markdown-view blockquote {
+    border-left: 4px solid var(--primary-color);
+    padding: 1rem 1.5rem;
+    margin: 2rem 0;
+    background-color: var(--bg-body);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    color: var(--text-secondary);
+}
+
+.markdown-view blockquote p {
+    margin-bottom: 0;
+}
+
+/* 代码块 */
+.markdown-view pre {
+    background-color: #1F2937;
+    color: #E5E7EB;
+    padding: 1.25rem;
+    border-radius: var(--radius-md);
+    overflow-x: auto;
+    margin: 2rem 0;
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+.markdown-view code {
+    font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+}
+
+.markdown-view p code,
+.markdown-view li code {
+    background-color: var(--bg-body);
+    color: var(--primary-color);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.875em;
+}
+
+/* 表格 */
+.markdown-view table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    font-size: 0.9375rem;
+    overflow-x: auto;
+}
+
+.markdown-view table thead {
+    background-color: var(--bg-body);
+}
+
+.markdown-view table th,
+.markdown-view table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.markdown-view table th {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.markdown-view table tbody tr:hover {
+    background-color: var(--bg-body);
+}
+
+.markdown-view table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* 图片 */
+.markdown-view img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    margin: 2rem 0;
+    box-shadow: var(--shadow-md);
+}
+
+/* 水平分割线 */
+.markdown-view hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 3rem 0;
+}
+
+/* 强调 */
+.markdown-view strong {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.markdown-view em {
+    font-style: italic;
+    color: var(--text-secondary);
+}
+
+/* ============================================
+   文章底部
+   ============================================ */
+.article-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 0;
+    margin-top: 48px;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+/* 点赞按钮 */
+.btn-like {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-surface);
+    color: var(--text-main);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-like:hover {
+    border-color: #EF4444;
+    color: #EF4444;
+    background-color: #FEF2F2;
+}
+
+.btn-like.liked {
+    border-color: #EF4444;
+    color: #EF4444;
+    background-color: #FEF2F2;
+}
+
+.btn-like.liked i {
+    animation: heartbeat 0.3s ease-in-out;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* 分享 */
+.share-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.share-label {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+.share-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    transition: var(--transition-fast);
+}
+
+.share-btn:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #FFFFFF;
+    transform: translateY(-2px);
+}
+
+/* 版权声明 */
+.copyright-notice {
+    padding: 16px;
+    background-color: var(--bg-body);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    text-align: center;
+    margin-top: 24px;
+}
+
+/* 上下篇导航 */
+.article-navigation {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.nav-prev,
+.nav-next {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    transition: var(--transition);
+}
+
+.nav-prev:hover,
+.nav-next:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-md);
+}
+
+.nav-prev {
+    align-items: flex-start;
+}
+
+.nav-next {
+    align-items: flex-end;
+    text-align: right;
+}
+
+.nav-label {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.nav-title {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--text-main);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ============================================
+   侧边目录
+   ============================================ */
+.toc-sidebar {
+    position: fixed;
+    top: 50%;
+    right: 40px;
+    transform: translateY(-50%);
+    z-index: 99;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.toc-container {
+    background-color: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    padding: 16px;
+    width: 220px;
+}
+
+.toc-header {
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-light);
+    margin-bottom: 12px;
+}
+
+.toc-header h5 {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.toc-content {
+    font-size: 0.8125rem;
+}
+
+.toc-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.toc-content li {
+    margin-bottom: 6px;
+}
+
+.toc-content a {
+    color: var(--text-secondary);
+    display: block;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+}
+
+.toc-content a:hover {
+    background-color: var(--bg-body);
+    color: var(--primary-color);
+}
+
+.toc-content a.active {
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.toc-empty {
+    color: var(--text-muted);
+    text-align: center;
+    padding: 12px;
+}
+
+/* ============================================
+   响应式设计
+   ============================================ */
+@media (max-width: 991px) {
+    .article-title {
+        font-size: 2rem;
+    }
+
+    .article-meta-wrapper {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .article-stats {
+        justify-content: center;
+    }
+
+    /* 隐藏侧边目录 */
+    .toc-sidebar {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 68px;
+    }
+
+    .article-header {
+        padding: 32px 0 0;
+    }
+
+    .article-title {
+        font-size: 1.625rem;
+    }
+
+    .article-main {
+        padding: 32px 0 48px;
+    }
+
+    .markdown-view {
+        font-size: 1rem;
+    }
+
+    .markdown-view h1 {
+        font-size: 1.625rem;
+    }
+
+    .markdown-view h2 {
+        font-size: 1.375rem;
+    }
+
+    .markdown-view h3 {
+        font-size: 1.125rem;
+    }
+
+    .article-footer {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .article-navigation {
+        grid-template-columns: 1fr;
+    }
+
+    .nav-next {
+        text-align: left;
+        align-items: flex-start;
+    }
+
+    /* 移动端显示简化目录 */
+    .toc-sidebar {
+        position: static;
+        transform: none;
+        width: 100%;
+        max-height: none;
+        margin-top: 32px;
+    }
+
+    .toc-container {
+        width: 100%;
+    }
+}
+
+/* ============================================
+   Edge 浏览器兼容性
+   ============================================ */
+@supports (-ms-ime-align: auto) {
+    .markdown-view {
+        word-wrap: break-word;
+    }
+
+    .nav-title {
+        max-height: 2.4em;
+        overflow: hidden;
+    }
+}
+
+/* ============================================
+   深色模式支持
+   ============================================ */
+@media (prefers-color-scheme: dark) {
+    /* 预留深色模式样式 */
+}
+
+/* ============================================
+   打印样式
+   ============================================ */
+@media print {
+    .article-header {
+        padding-top: 0;
+    }
+
+    .toc-sidebar,
+    .article-footer,
+    .article-navigation,
+    .copyright-notice {
+        display: none;
+    }
+
+    .markdown-view {
+        font-size: 12pt;
+        color: #000000;
+    }
+
+    .markdown-view a {
+        color: #000000;
+        text-decoration: underline;
+    }
+}
+</style>
+
+<!-- 文章交互脚本 -->
+<script th:inline="javascript">
+$(document).ready(function() {
+    // 初始化 Summernote 并渲染内容
+    initContent();
+
+    // 生成目录
+    generateTOC();
+
+    // 目录滚动高亮
+    initTOCScrollSpy();
+});
+
+// 初始化内容渲染
+function initContent() {
+    var content = /*[[${bContent.content}]]*/ '';
+    if (content) {
+        // 创建临时元素渲染 Summernote 内容
+        var $temp = $('<div class="summernote"></div>');
+        $temp.summernote({
+            lang: 'zh-CN'
+        });
+        $temp.summernote('code', content);
+        $('#markdown-view').html($temp.find('.note-editable').html());
+        $temp.summernote('destroy');
+    }
+}
+
+// 生成目录
+function generateTOC() {
+    var headers = $('#markdown-view').find('h1, h2, h3');
+    if (headers.length === 0) {
+        $('.toc-empty').show();
+        return;
+    }
+
+    var tocHtml = '<ul>';
+    var lastLevel = 1;
+
+    headers.each(function(index) {
+        var $header = $(this);
+        var level = parseInt($header[0].tagName.substring(1));
+        var title = $header.text();
+        var id = 'heading-' + index;
+
+        // 为标题添加 ID
+        $header.attr('id', id);
+
+        // 处理嵌套
+        if (level > lastLevel) {
+            tocHtml += '<ul>';
+        } else if (level < lastLevel) {
+            tocHtml += '</li></ul></li>';
+        } else {
+            if (index > 0) {
+                tocHtml += '</li>';
+            }
+        }
+
+        tocHtml += '<li><a href="#' + id + '" data-target="#' + id + '">' + title + '</a>';
+        lastLevel = level;
+    });
+
+    // 闭合标签
+    for (var i = lastLevel; i > 1; i--) {
+        tocHtml += '</li></ul>';
+    }
+    tocHtml += '</li></ul>';
+
+    $('#tocContent').html(tocHtml);
+}
+
+// 目录滚动高亮
+function initTOCScrollSpy() {
+    var headers = $('#markdown-view').find('h1, h2, h3');
+    if (headers.length === 0) return;
+
+    var tocLinks = $('.toc-content a');
+
+    $(window).on('scroll', function() {
+        var scrollTop = $(window).scrollTop();
+        var currentHeader = null;
+
+        headers.each(function() {
+            var $header = $(this);
+            var offsetTop = $header.offset().top - 150;
+
+            if (scrollTop >= offsetTop) {
+                currentHeader = $header.attr('id');
+            }
+        });
+
+        if (currentHeader) {
+            tocLinks.removeClass('active');
+            $('.toc-content a[href="#' + currentHeader + '"]').addClass('active');
+        }
+    });
+
+    // 平滑滚动
+    tocLinks.on('click', function(e) {
+        e.preventDefault();
+        var target = $(this).attr('href');
+        var offset = $(target).offset().top - 100;
+
+        $('html, body').animate({
+            scrollTop: offset
+        }, 500);
+    });
+}
+
+// 点赞功能
+function likeArticle() {
+    var $btn = $('.btn-like');
+    $btn.toggleClass('liked');
+
+    if ($btn.hasClass('liked')) {
+        $btn.find('i').removeClass('fa-heart-o').addClass('fa-heart');
+        layer.msg('已点赞');
+    } else {
+        $btn.find('i').removeClass('fa-heart').addClass('fa-heart-o');
+    }
+}
+
+// 分享到微博
+function shareToWeibo() {
+    var url = encodeURIComponent(window.location.href);
+    var title = encodeURIComponent($(document).attr('title'));
+    window.open('http://service.weibo.com/share/share.php?url=' + url + '&title=' + title, '_blank');
+}
+
+// 分享到 QQ
+function shareToQQ() {
+    var url = encodeURIComponent(window.location.href);
+    window.open('http://connect.qq.com/widget/shareqq/index.html?url=' + url, '_blank');
+}
+
+// 复制链接
+function copyLink() {
+    var url = window.location.href;
+
+    // 创建临时输入框
+    var $temp = $('<input>');
+    $('body').append($temp);
+    $temp.val(url).select();
+    document.execCommand('copy');
+    $temp.remove();
+
+    layer.msg('链接已复制');
+}
+</script>
+
 </body>
 </html>

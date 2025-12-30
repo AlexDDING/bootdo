@@ -1,142 +1,644 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>BootDo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>登录 - BootDo管理系统</title>
     <meta name="keywords" content="BootDo管理系统">
-    <meta name="description" content="BootDo管理系统">
+    <meta name="description" content="BootDo管理系统 - 现代化的后台管理平台">
+
+    <!-- Bootstrap CSS -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
     <link href="/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <!-- Animate.css -->
     <link href="/css/animate.css" rel="stylesheet">
-    <link href="/css/style.css" rel="stylesheet">
-    <link href="/css/login.css" rel="stylesheet">
-    <!--[if lt IE 9]>
-    <meta http-equiv="refresh" content="0;ie.html"/>
-    <![endif]-->
+    <!-- 现代化样式 -->
+    <link href="/css/modern-style.css?v=1.0.0" rel="stylesheet">
+
+    <style>
+        /* ============================================
+           登录页面专用样式
+           ============================================ */
+
+        /* 全屏背景 */
+        body.signin {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: relative;
+        }
+
+        /* 深色半透明遮罩 */
+        body.signin::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.75) 100%);
+            backdrop-filter: blur(2px);
+            z-index: 0;
+        }
+
+        /* 登录容器 */
+        .login-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 440px;
+            padding: 20px;
+        }
+
+        /* 登录卡片 - 毛玻璃效果 */
+        .login-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            padding: 48px 40px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Logo 区域 */
+        .login-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-logo h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+            letter-spacing: -0.05em;
+        }
+
+        .login-logo p {
+            color: #6B7280;
+            margin-top: 8px;
+            font-size: 0.9375rem;
+        }
+
+        /* 表单标题 */
+        .login-title {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .login-title h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1F2937;
+            margin: 0;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: #6B7280;
+            font-size: 0.875rem;
+            margin-bottom: 32px;
+        }
+
+        /* 表单组 */
+        .form-group-modern {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        /* 输入框图标 */
+        .input-icon-wrapper {
+            position: relative;
+        }
+
+        .input-icon-wrapper .fa {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9CA3AF;
+            font-size: 1.125rem;
+            transition: color 0.3s ease;
+            z-index: 2;
+        }
+
+        .input-icon-wrapper .form-control {
+            padding-left: 48px;
+            padding-right: 16px;
+            height: 52px;
+            font-size: 0.9375rem;
+            border: 2px solid #E5E7EB;
+            background-color: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+
+        .input-icon-wrapper .form-control:focus {
+            border-color: #3B82F6;
+            background-color: #FFFFFF;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .input-icon-wrapper .form-control:focus + .fa,
+        .input-icon-wrapper:focus-within .fa {
+            color: #3B82F6;
+        }
+
+        /* 输入框标签 */
+        .form-label-modern {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        /* 登录按钮 */
+        .btn-login-modern {
+            width: 100%;
+            height: 52px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            color: #FFFFFF;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
+            letter-spacing: 0.025em;
+        }
+
+        .btn-login-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.39);
+            background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+        }
+
+        .btn-login-modern:active {
+            transform: translateY(0);
+        }
+
+        .btn-login-modern:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+        }
+
+        /* 验证码区域 */
+        .verify-wrapper {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .verify-input {
+            flex: 1;
+        }
+
+        .verify-input .form-control {
+            height: 52px;
+            text-align: center;
+            font-size: 1.125rem;
+            font-weight: 600;
+            letter-spacing: 0.25em;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            background-color: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+
+        .verify-input .form-control:focus {
+            border-color: #3B82F6;
+            background-color: #FFFFFF;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .verify-image-wrapper {
+            width: 140px;
+            height: 52px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #E5E7EB;
+            background-color: #F3F4F6;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .verify-image-wrapper:hover {
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .verify-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 分隔线 */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 28px 0;
+            color: #9CA3AF;
+            font-size: 0.8125rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: #E5E7EB;
+        }
+
+        .divider span {
+            padding: 0 16px;
+        }
+
+        /* 外部链接区域 */
+        .outside-login {
+            margin-top: 20px;
+        }
+
+        .outside-login-tit {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .outside-login-tit span {
+            color: #6B7280;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .outside-login-cot {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .outside-login-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            background-color: rgba(243, 244, 246, 0.8);
+            border: 1px solid #E5E7EB;
+            color: #6B7280;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .outside-login-btn:hover {
+            background-color: #FFFFFF;
+            border-color: #3B82F6;
+            color: #3B82F6;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+        }
+
+        .outside-login-btn em {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .outside-login-btn i {
+            font-size: 1.5rem;
+        }
+
+        .outside-login-btn span {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* 页脚 */
+        .login-footer {
+            text-align: center;
+            margin-top: 24px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8125rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-footer a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+        }
+
+        .login-footer a:hover {
+            color: #FFFFFF;
+            text-decoration: underline;
+        }
+
+        /* 错误提示样式 */
+        .error-message {
+            background-color: #FEE2E2;
+            color: #991B1B;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 0.875rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .error-message i {
+            font-size: 1rem;
+        }
+
+        /* 验证错误样式 */
+        input.error {
+            border-color: #EF4444 !important;
+            background-color: #FEF2F2 !important;
+        }
+
+        label.error {
+            color: #EF4444;
+            font-size: 0.75rem;
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* ============================================
+           响应式设计
+           ============================================ */
+        @media (max-width: 576px) {
+            .login-card {
+                padding: 32px 24px;
+            }
+
+            .login-logo h1 {
+                font-size: 2rem;
+            }
+
+            .verify-wrapper {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .verify-image-wrapper {
+                width: 100%;
+                height: 48px;
+            }
+
+            .outside-login-cot {
+                gap: 8px;
+            }
+
+            .outside-login-btn {
+                width: 70px;
+                height: 70px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .login-card {
+                padding: 24px 20px;
+            }
+
+            .outside-login-btn {
+                width: 60px;
+                height: 60px;
+            }
+
+            .outside-login-btn i {
+                font-size: 1.25rem;
+            }
+
+            .outside-login-btn span {
+                font-size: 0.6875rem;
+            }
+        }
+
+        /* ============================================
+           加载动画
+           ============================================ */
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .btn-login-modern.loading {
+            pointer-events: none;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* 暗色模式支持 */
+        @media (prefers-color-scheme: dark) {
+            /* 保持亮色设计，因为登录页面有自定义背景 */
+        }
+    </style>
+
     <script>
         if (window.top !== window.self) {
             window.top.location = window.location;
         }
     </script>
-
 </head>
 
 <body class="signin">
-<div class="signinpanel">
-    <div class="row">
-        <div class="col-sm-7">
-            <div class="signin-info">
-                <div class="logopanel m-b">
-                    <h1>BootDo</h1>
-                </div>
-                <div class="m-b"></div>
-                <h3>
-                    欢迎使用 <strong>BootDo管理系统</strong>
-                </h3>
-                <ul class="m-b">
-                    <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i>
-                        springBoot
-                    </li>
-                    <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> mybatis</li>
-                    <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> shiro</li>
-                    <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i>
-                        thymeleaf
-                    </li>
-                    <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i>
-                        bootstrap
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="col-sm-5">
-            <form id="signupForm">
-                <h3 class="text-center">用户登录</h3>
-                <p class="m-t-md text-center">欢迎登录bootdo后台管理系统</p>
-                <input type="text" name="username" class="form-control uname"
-                       th:value="${username}"/>
-                <input type="password" name="password"
-                       class="form-control pword m-b" th:value="${password}"/>
-                <a id="login" class="btn btn-login btn-block">登录</a>
-                <div class="row">
-                    <div class="col-xs-6 pull_left">
-                        <div class="form-group">
-                            <input class="form-control" type="tel" name="verify" id="verify" placeholder="请输入验证码" maxlength="4">
-                        </div>
-                    </div>
-                    <div class="col-xs-6 pull_left">
-                        <a href="javascript:void(0);" rel="external nofollow" title="点击更换验证码">
-                            <img style="margin-top: 12px;" id="imgVerify" src="" alt="更换验证码" height="36" width="100%" onclick="getVerify(this);">
-                        </a>
-                    </div>
-                </div>
-                <!--按钮模块-->
-                <div class="outside-login">
-                    <div class="outside-login-tit">
-                        <span>代码链接</span>
-                    </div>
-                    <div class="outside-login-cot">
-                        <a class="outside-login-btn wxoa actived oschina J-btnSwitchLoginType" target="_Blank"
-                           href="https://www.oschina.net/p/bootdo">
-                            <em><i class="fa fa-home"></i></em>
-                            <span>oschina主页</span>
-                        </a>
-                        <a class="outside-login-btn wxoa actived my J-btnSwitchLoginType" target="_Blank"
-                           href="https://gitee.com/lcg0124/bootdo">
-                            <em><i class="fa fa-git-square"></i></em>
-                            <span>码云仓库</span>
-                        </a>
-                        <a class="outside-login-btn wxoa actived git J-btnSwitchLoginType" target="_Blank"
-                           href="https://github.com/lcg0124/bootdo">
-                            <em><i class="fa fa-github"></i></em>
-                            <span>GitHub仓库</span>
-                        </a>
-                    </div>
-                </div>
 
-            </form>
+<!-- 登录容器 -->
+<div class="login-container">
+    <div class="login-card">
+        <!-- Logo 区域 -->
+        <div class="login-logo">
+            <h1>BootDo</h1>
+            <p>现代化后台管理系统</p>
         </div>
-    </div>
-    <div class="signup-footer">
-        <div class="pull-left">&copy; 2017 All Rights Reserved. BootDo
+
+        <!-- 表单标题 -->
+        <div class="login-title">
+            <h2>欢迎回来</h2>
+        </div>
+        <p class="login-subtitle">请输入您的账号信息登录系统</p>
+
+        <!-- 登录表单 -->
+        <form id="signupForm" autocomplete="off">
+            <!-- 用户名 -->
+            <div class="form-group-modern">
+                <label class="form-label-modern" for="username">用户名</label>
+                <div class="input-icon-wrapper">
+                    <input type="text"
+                           id="username"
+                           name="username"
+                           class="form-control uname"
+                           placeholder="请输入用户名"
+                           th:value="${username}"
+                           autocomplete="username">
+                    <i class="fa fa-user"></i>
+                </div>
+            </div>
+
+            <!-- 密码 -->
+            <div class="form-group-modern">
+                <label class="form-label-modern" for="password">密码</label>
+                <div class="input-icon-wrapper">
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           class="form-control pword"
+                           placeholder="请输入密码"
+                           th:value="${password}"
+                           autocomplete="current-password">
+                    <i class="fa fa-lock"></i>
+                </div>
+            </div>
+
+            <!-- 验证码 -->
+            <div class="form-group-modern">
+                <label class="form-label-modern">验证码</label>
+                <div class="verify-wrapper">
+                    <div class="verify-input">
+                        <input type="text"
+                               name="verify"
+                               id="verify"
+                               class="form-control"
+                               placeholder="验证码"
+                               maxlength="4"
+                               autocomplete="off">
+                    </div>
+                    <div class="verify-image-wrapper" title="点击更换验证码">
+                        <img id="imgVerify"
+                             src=""
+                             alt="验证码"
+                             onclick="getVerify(this);">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 登录按钮 -->
+            <button type="button" id="login" class="btn-login-modern">
+                <i class="fa fa-sign-in"></i> 登录系统
+            </button>
+        </form>
+
+        <!-- 分隔线 -->
+        <div class="divider">
+            <span>或访问</span>
+        </div>
+
+        <!-- 外部链接 -->
+        <div class="outside-login">
+            <div class="outside-login-tit">
+                <span>代码链接</span>
+            </div>
+            <div class="outside-login-cot">
+                <a class="outside-login-btn"
+                   target="_blank"
+                   href="https://www.oschina.net/p/bootdo"
+                   title="OSChina主页">
+                    <em><i class="fa fa-home"></i></em>
+                    <span>OSChina</span>
+                </a>
+                <a class="outside-login-btn"
+                   target="_blank"
+                   href="https://gitee.com/lcg0124/bootdo"
+                   title="码云仓库">
+                    <em><i class="fa fa-git-square"></i></em>
+                    <span>码云</span>
+                </a>
+                <a class="outside-login-btn"
+                   target="_blank"
+                   href="https://github.com/lcg0124/bootdo"
+                   title="GitHub仓库">
+                    <em><i class="fa fa-github"></i></em>
+                    <span>GitHub</span>
+                </a>
+            </div>
         </div>
     </div>
 </div>
-<script th:inline="javascript"> var ctx = [[@{
-    /}]] ; </script>
-<!-- 全局js -->
+
+<!-- 页脚 -->
+<div class="login-footer">
+    &copy; 2024 BootDo. All Rights Reserved.
+</div>
+
+<!-- JavaScript -->
+<script th:inline="javascript"> var ctx = [[@{/}]];</script>
+
+<!-- jQuery -->
 <script src="/js/jquery.min.js?v=2.1.4" th:src="@{/js/jquery.min.js?v=2.1.4}"></script>
-<script src="/js/bootstrap.min.js?v=3.3.6" th:src="@{/js/bootstrap.min.js?v=3.3.6}"></script>
 
-<!-- 自定义js -->
-<script src="/js/content.js?v=1.0.0" th:src="@{/js/content.js?v=1.0.0}"></script>
-
-<!-- jQuery Validation plugin javascript-->
-<script src="/js/ajax-util.js"></script>
+<!-- jQuery Validation -->
 <script src="/js/plugins/validate/jquery.validate.min.js"
         th:src="@{/js/plugins/validate/jquery.validate.min.js}"></script>
-<script src="/js/plugins/validate/messages_zh.min.js" th:src="@{/js/plugins/validate/messages_zh.min.js}"></script>
-<script src="/js/plugins/layer/layer.min.js" th:src="@{/js/plugins/layer/layer.min.js}"></script>
+<script src="/js/plugins/validate/messages_zh.min.js"
+        th:src="@{/js/plugins/validate/messages_zh.min.js}"></script>
+
+<!-- Layer -->
+<script src="/js/plugins/layer/layer.min.js"
+        th:src="@{/js/plugins/layer/layer.min.js}"></script>
+
+<!-- Ajax Util -->
+<script src="/js/ajax-util.js"></script>
+
 <script type="text/javascript">
     $(document).ready(function () {
+        // 登录按钮点击事件
         $("#login").on('click', function () {
             $("#signupForm").submit();
         });
+
+        // 初始化表单验证
         validateRule();
+
+        // 回车键登录
         $("body").keydown(keyDownLogon);
-        // getVerify($("#imgVerify"));
-        $("#imgVerify").click()
+
+        // 加载验证码
+        $("#imgVerify").click();
     });
 
+    // 设置验证默认提交处理
     $.validator.setDefaults({
         submitHandler: function () {
             login();
         }
     });
 
+    // 登录函数
     function login() {
+        const $btn = $("#login");
+        $btn.addClass("loading");
+
         $.ajax({
             type: "POST",
             url: ctx + "login",
@@ -144,50 +646,74 @@
             success: function (r) {
                 if (r.code == 0) {
                     var index = layer.load(1, {
-                        shade: [0.1, '#fff'] //0.1透明度的白色背景
+                        shade: [0.3, '#000']
                     });
                     parent.location.href = '/index';
                 } else {
                     layer.msg(r.msg);
+                    $btn.removeClass("loading");
+                    // 刷新验证码
+                    $("#imgVerify").click();
                 }
             },
+            error: function () {
+                layer.msg("登录失败，请稍后重试");
+                $btn.removeClass("loading");
+                // 刷新验证码
+                $("#imgVerify").click();
+            }
         });
     }
 
+    // 回车键处理
     function keyDownLogon() {
         if (event.keyCode == "13") {
             $("#login").trigger('click');
         }
     }
 
-
+    // 表单验证规则
     function validateRule() {
         var icon = "<i class='fa fa-times-circle'></i> ";
         $("#signupForm").validate({
+            errorElement: "label",
+            errorPlacement: function (error, element) {
+                error.insertAfter(element.parent());
+            },
             rules: {
                 username: {
-                    required: true
+                    required: true,
+                    minlength: 2
                 },
                 password: {
-                    required: true
+                    required: true,
+                    minlength: 4
                 }
             },
             messages: {
                 username: {
                     required: icon + "请输入您的用户名",
+                    minlength: icon + "用户名至少2个字符"
                 },
                 password: {
                     required: icon + "请输入您的密码",
+                    minlength: icon + "密码至少4个字符"
                 }
+            },
+            highlight: function (element) {
+                $(element).addClass("error");
+            },
+            unhighlight: function (element) {
+                $(element).removeClass("error");
             }
-        })
+        });
     }
 
-    //获取验证码
+    // 获取验证码
     function getVerify(obj) {
         obj.src = "/getVerify?" + Math.random();
-        console.log(obj)
     }
 </script>
+
 </body>
 </html>

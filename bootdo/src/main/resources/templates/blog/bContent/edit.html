@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html>
 <meta charset="utf-8">
-<head th:include="include :: header"></head>
+<head th:include="include :: header">
+    <!-- Editor.md CSS - Local files -->
+    <link rel="stylesheet" href="/js/plugins/editor.md-master/lib/codemirror/codemirror.min.css"/>
+    <link rel="stylesheet" href="/js/plugins/editor.md-master/css/editormd.min.css"/>
+    <link rel="stylesheet" href="/js/plugins/editor.md-master/css/editormd.preview.min.css"/>
+</head>
 <body class="gray-bg">
 	<div class="wrapper wrapper-content ">
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="ibox float-e-margins">
 					<div class="ibox-content">
-						<div class="col-sm-12">
-							<h4>发布文章</h4>
-						</div>
+						<h4>编辑文章</h4>
 						<form class="form-horizontal m-t" id="signupForm">
 							<input id="cid" name="cid" type="hidden"
 								th:value="${bContent.cid}">
@@ -27,12 +30,19 @@
 								</div>
 							</div>
 							<div class="form-group">
+								<!-- Hidden fields for dual storage -->
 								<input id="content" name="content" type="hidden"
-									th:value="${bContent.content}"> <label
-									class="col-sm-1 control-label">内容：</label>
-								<div class="col-sm-11">
-									<div class="ibox-content no-padding">
-										<div id="content_sn" class="summernote"></div>
+									th:value="${bContent.content}">
+								<input id="contentMarkdown" name="contentMarkdown" type="hidden"
+									th:value="${bContent.contentMarkdown}">
+								<label class="col-sm-1 control-label">内容：</label>
+								<div class="col-sm-12">
+									<div class="editormd-wrapper" style="padding: 0; height: 700px; width: 100%;">
+										<!-- Editor.md Container -->
+										<div id="editormd-container" style="height: 100%;">
+											<!-- 初始 Markdown 内容，使用 th:text 避免 HTML 转义 -->
+											<textarea id="editormd-markdown" style="display:none;" th:text="${bContent.contentMarkdown} ?: ${bContent.content}"></textarea>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -88,8 +98,11 @@
 		</div>
 	</div>
 	<div th:include="include::footer"></div>
-	<script type="text/javascript" src="/js/appjs/blog/bContent/edit.js">
-		
-	</script>
+
+	<!-- Editor.md Dependencies - Local files -->
+	<script src="/js/plugins/editor.md-master/lib/codemirror/codemirror.min.js"></script>
+	<script src="/js/plugins/editor.md-master/lib/marked.min.js"></script>
+	<script src="/js/plugins/editor.md-master/editormd.min.js"></script>
+	<script type="text/javascript" src="/js/appjs/blog/bContent/edit.js"></script>
 </body>
 </html>

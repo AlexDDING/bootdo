@@ -27,6 +27,8 @@ public class ContentDO implements Serializable {
 	private Long modified;
 	//内容
 	private String content;
+	//Markdown源内容
+	private String contentMarkdown;
 	//类型
 	private String type;
 	//标签
@@ -123,6 +125,18 @@ public class ContentDO implements Serializable {
 	 */
 	public String getContent() {
 		return content;
+	}
+	/**
+	 * 设置：Markdown源内容
+	 */
+	public void setContentMarkdown(String contentMarkdown) {
+		this.contentMarkdown = contentMarkdown;
+	}
+	/**
+	 * 获取：Markdown源内容
+	 */
+	public String getContentMarkdown() {
+		return contentMarkdown;
 	}
 	/**
 	 * 设置：类型

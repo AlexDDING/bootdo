@@ -6,7 +6,7 @@
 
 <body>
 <!-- 导航栏 -->
-<nav th:replace="blog/index/include_blog :: header"></nav>
+<nav th:replace="blog/index/include_blog :: navbar"></nav>
 
 <!-- Hero Banner -->
 <header class="blog-hero">
@@ -641,7 +641,7 @@ function renderArticles(articles) {
         html += '        <h3 class="article-title">';
         html += '            <a href="/blog/open/post/' + article.cid + '">' + escapeHtml(article.title) + '</a>';
         html += '        </h3>';
-        html += '        <p class="article-excerpt">' + escapeHtml(article.content || '暂无摘要') + '</p>';
+        html += '        <p class="article-excerpt">' + escapeHtml(stripHtml(article.content) || '暂无摘要') + '</p>';
         html += '        <div class="article-meta">';
         html += '            <span class="article-meta-item"><i class="fa fa-user"></i><a href="#">' + escapeHtml(article.author || 'Ding') + '</a></span>';
         html += '            <span class="article-meta-item"><i class="fa fa-clock-o"></i>' + (article.gtmModified || '') + '</span>';
@@ -651,6 +651,16 @@ function renderArticles(articles) {
     }
 
     $('#articleList').append(html);
+}
+
+// Strip HTML tags for excerpt
+function stripHtml(html) {
+    if (!html) return '';
+    var tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    var text = tmp.textContent || tmp.innerText || "";
+    // Limit to 150 characters
+    return text.length > 150 ? text.substring(0, 150) + '...' : text;
 }
 
 // HTML 转义函数

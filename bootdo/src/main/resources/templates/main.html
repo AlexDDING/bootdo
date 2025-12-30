@@ -566,6 +566,13 @@
         .stat-card:nth-child(3) { animation-delay: 0.15s; }
         .stat-card:nth-child(4) { animation-delay: 0.2s; }
     </style>
+
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="/js/bootstrap.min.js"></script>
+    <!-- Layer (弹窗组件) -->
+    <script src="/js/plugins/layer/layer.js"></script>
 </head>
 <body>
 <div class="dashboard-container">
@@ -836,7 +843,7 @@
 </div>
 
 <!-- ECharts -->
-<script src="/js/plugins/echarts/echarts.min.js"></script>
+<script src="/js/plugins/echarts/echarts-all.js"></script>
 
 <script>
     // 初始化图表
@@ -845,156 +852,221 @@
         initPieChart();
     }
 
+    // 显示错误状态
+    function showErrorState(chartDom) {
+        chartDom.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#EF4441;">' +
+            '<div style="text-align:center;">' +
+            '<i class="fa fa-exclamation-circle" style="font-size:48px;margin-bottom:16px;"></i><br>' +
+            '<span>数据加载失败</span>' +
+            '</div></div>';
+    }
+
     // 访问趋势图
     function initTrendChart() {
-        const chart = echarts.init(document.getElementById('trendChart'));
-        const option = {
-            grid: {
-                left: '3%',
-                right: '4%',
-                bottom: '3%',
-                containLabel: true
-            },
-            tooltip: {
-                trigger: 'axis',
-                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                borderColor: '#E5E7EB',
-                borderWidth: 1,
-                textStyle: {
-                    color: '#1F2937'
-                }
-            },
-            xAxis: {
-                type: 'category',
-                boundaryGap: false,
-                data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
-                axisLine: {
-                    lineStyle: { color: '#E5E7EB' }
-                },
-                axisLabel: {
-                    color: '#6B7280'
-                }
-            },
-            yAxis: {
-                type: 'value',
-                axisLine: {
-                    show: false
-                },
-                axisLabel: {
-                    color: '#6B7280'
-                },
-                splitLine: {
-                    lineStyle: { color: '#F3F4F6' }
-                }
-            },
-            series: [{
-                name: '访问量',
-                type: 'line',
-                smooth: true,
-                symbol: 'circle',
-                symbolSize: 6,
-                lineStyle: {
-                    width: 3,
-                    color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [{
-                        offset: 0,
-                        color: '#3B82F6'
-                    }, {
-                        offset: 1,
-                        color: '#6366F1'
-                    }])
-                },
-                itemStyle: {
-                    color: '#3B82F6',
-                    borderColor: '#FFFFFF',
-                    borderWidth: 2
-                },
-                areaStyle: {
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                        offset: 0,
-                        color: 'rgba(59, 130, 246, 0.3)'
-                    }, {
-                        offset: 1,
-                        color: 'rgba(59, 130, 246, 0.05)'
-                    }])
-                },
-                data: [820, 932, 901, 934, 1290, 1330, 1320]
-            }]
-        };
-        chart.setOption(option);
+        const chartDom = document.getElementById('trendChart');
+        const chart = echarts.init(chartDom);
+        chart.showLoading({
+            text: '加载中...',
+            color: '#6366F1',
+            textColor: '#6B7280',
+            maskColor: 'rgba(255, 255, 255, 0.8)',
+        });
 
-        // 响应式
-        window.addEventListener('resize', function() {
-            chart.resize();
+        $.ajax({
+            url: '/dashboard/trend',
+            type: 'GET',
+            success: function(response) {
+                chart.hideLoading();
+                if (response.code === 0) {
+                    const option = {
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '5%',
+                            top: '10%',
+                            containLabel: true
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                            borderColor: '#E5E7EB',
+                            borderWidth: 1,
+                            textStyle: { color: '#1F2937', fontSize: 13 },
+                            padding: [12, 16],
+                            extraCssText: 'box-shadow: 0 4px 12px rgba(0,0,0,0.1);border-radius: 8px;'
+                        },
+                        xAxis: {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: response.dates,
+                            axisLine: { lineStyle: { color: '#E5E7EB', width: 1 } },
+                            axisLabel: { color: '#6B7280', fontSize: 12, margin: 12 },
+                            axisTick: { show: false }
+                        },
+                        yAxis: {
+                            type: 'value',
+                            axisLine: { show: false },
+                            axisLabel: { color: '#6B7280', fontSize: 12 },
+                            axisTick: { show: false },
+                            splitLine: {
+                                lineStyle: { color: '#F3F4F6', width: 1, type: 'dashed' }
+                            }
+                        },
+                        series: [{
+                            name: '访问量',
+                            type: 'line',
+                            smooth: true,
+                            symbol: 'circle',
+                            symbolSize: 8,
+                            lineStyle: {
+                                width: 3,
+                                color: {
+                                    type: 'linear',
+                                    x: 0, y: 0, x2: 1, y2: 0,
+                                    colorStops: [
+                                        { offset: 0, color: '#3B82F6' },
+                                        { offset: 1, color: '#6366F1' }
+                                    ]
+                                }
+                            },
+                            itemStyle: {
+                                color: '#3B82F6',
+                                borderColor: '#FFFFFF',
+                                borderWidth: 2,
+                                shadowColor: 'rgba(59, 130, 246, 0.3)',
+                                shadowBlur: 8
+                            },
+                            areaStyle: {
+                                color: {
+                                    type: 'linear',
+                                    x: 0, y: 0, x2: 0, y2: 1,
+                                    colorStops: [
+                                        { offset: 0, color: 'rgba(59, 130, 246, 0.25)' },
+                                        { offset: 1, color: 'rgba(99, 102, 241, 0.03)' }
+                                    ]
+                                }
+                            },
+                            data: response.counts
+                        }]
+                    };
+                    chart.setOption(option);
+
+                    window.addEventListener('resize', function() { chart.resize(); });
+                } else {
+                    showErrorState(chartDom);
+                }
+            },
+            error: function() {
+                chart.hideLoading();
+                showErrorState(chartDom);
+            }
         });
     }
 
     // 内容分布饼图
     function initPieChart() {
-        const chart = echarts.init(document.getElementById('pieChart'));
-        const option = {
-            tooltip: {
-                trigger: 'item',
-                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                borderColor: '#E5E7EB',
-                borderWidth: 1,
-                textStyle: {
-                    color: '#1F2937'
-                }
-            },
-            legend: {
-                bottom: '0%',
-                left: 'center',
-                textStyle: {
-                    color: '#6B7280',
-                    fontSize: 12
-                }
-            },
-            series: [{
-                name: '文章分类',
-                type: 'pie',
-                radius: ['40%', '70%'],
-                avoidLabelOverlap: false,
-                itemStyle: {
-                    borderRadius: 8,
-                    borderColor: '#FFFFFF',
-                    borderWidth: 2
-                },
-                label: {
-                    show: false,
-                    position: 'center'
-                },
-                emphasis: {
-                    label: {
-                        show: true,
-                        fontSize: 18,
-                        fontWeight: 'bold',
-                        color: '#1F2937'
-                    }
-                },
-                labelLine: {
-                    show: false
-                },
-                data: [
-                    { value: 428, name: '技术文章', itemStyle: { color: '#3B82F6' } },
-                    { value: 356, name: '生活随笔', itemStyle: { color: '#10B981' } },
-                    { value: 289, name: '学习笔记', itemStyle: { color: '#F59E0B' } },
-                    { value: 211, name: '项目经验', itemStyle: { color: '#6366F1' } }
-                ]
-            }]
-        };
-        chart.setOption(option);
+        const chartDom = document.getElementById('pieChart');
+        const chart = echarts.init(chartDom);
+        chart.showLoading({
+            text: '加载中...',
+            color: '#6366F1',
+            textColor: '#6B7280',
+            maskColor: 'rgba(255, 255, 255, 0.8)',
+        });
 
-        // 响应式
-        window.addEventListener('resize', function() {
-            chart.resize();
+        $.ajax({
+            url: '/dashboard/distribution',
+            type: 'GET',
+            success: function(response) {
+                chart.hideLoading();
+                if (response.code === 0) {
+                    // Build data array with colors and shadows
+                    const data = response.names.map((name, index) => ({
+                        value: response.values[index],
+                        name: name,
+                        itemStyle: {
+                            color: response.colors[index],
+                            shadowColor: response.colors[index] + '40',
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowOffsetY: 2
+                        }
+                    }));
+
+                    const option = {
+                        tooltip: {
+                            trigger: 'item',
+                            backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                            borderColor: '#E5E7EB',
+                            borderWidth: 1,
+                            textStyle: { color: '#1F2937', fontSize: 13 },
+                            padding: [12, 16],
+                            extraCssText: 'box-shadow: 0 4px 12px rgba(0,0,0,0.1);border-radius: 8px;',
+                            formatter: '{b}: {c} ({d}%)'
+                        },
+                        legend: {
+                            bottom: '2%',
+                            left: 'center',
+                            data: response.names,
+                            textStyle: { color: '#6B7280', fontSize: 12 },
+                            itemGap: 20,
+                            icon: 'circle'
+                        },
+                        series: [{
+                            name: '文章分类',
+                            type: 'pie',
+                            radius: ['45%', '72%'],
+                            center: ['50%', '45%'],
+                            avoidLabelOverlap: true,
+                            itemStyle: {
+                                borderRadius: 10,
+                                borderColor: '#FFFFFF',
+                                borderWidth: 3
+                            },
+                            label: {
+                                show: false,
+                                position: 'center'
+                            },
+                            emphasis: {
+                                label: {
+                                    show: true,
+                                    fontSize: 20,
+                                    fontWeight: '600',
+                                    color: '#1F2937'
+                                },
+                                itemStyle: {
+                                    shadowBlur: 15,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.15)'
+                                }
+                            },
+                            labelLine: { show: false },
+                            data: data
+                        }]
+                    };
+                    chart.setOption(option);
+
+                    window.addEventListener('resize', function() { chart.resize(); });
+                } else {
+                    showErrorState(chartDom);
+                }
+            },
+            error: function() {
+                chart.hideLoading();
+                showErrorState(chartDom);
+            }
         });
     }
 
     // 刷新图表
     function refreshChart(type) {
         if (type === 'trend') {
+            const oldChart = echarts.getInstanceByDom(document.getElementById('trendChart'));
+            if (oldChart) oldChart.dispose();
             initTrendChart();
         } else if (type === 'pie') {
+            const oldChart = echarts.getInstanceByDom(document.getElementById('pieChart'));
+            if (oldChart) oldChart.dispose();
             initPieChart();
         }
     }
